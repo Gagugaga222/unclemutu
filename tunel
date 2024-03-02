@@ -3,18 +3,17 @@
 function feedback404()
 {
     header("HTTP/1.0 404 Not Found");
-    echo "<h1><strong>404 Not Found</strong></h1>";
-    
+    echo "<h1>404 Not Found</h1>";
 }
 
 if (isset($_GET['site'])) {
-    $filename = "lalalala.txt";
+    $filename = "list-brand.txt";
     $lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $target_string = strtolower($_GET['site']);
     foreach ($lines as $item) {
         if (strtolower($item) === $target_string) {
             $BRAND = strtoupper($target_string);
-        }    
+        }
     }
     if (isset($BRAND)) {
         $BRANDS = $BRAND;
@@ -24,10 +23,10 @@ if (isset($_GET['site'])) {
             $parsedUrl = parse_url($fullUrl);
             $scheme = isset($parsedUrl['scheme']) ? $parsedUrl['scheme'] : '';
             $host = isset($parsedUrl['host']) ? $parsedUrl['host'] : '';
-            $path = isset($parsedUrl['path']) ? $parsedUrl['path'] : ''; 
+            $path = isset($parsedUrl['path']) ? $parsedUrl['path'] : '';
             $query = isset($parsedUrl['query']) ? $parsedUrl['query'] : '';
             $baseUrl = $scheme . "://" . $host . $path . '?' . $query;
-            $url = $baseUrl;
+            $urlPath = $baseUrl;
         } else {
             echo "URL saat ini tidak didefinisikan.";
         }
@@ -40,21 +39,42 @@ if (isset($_GET['site'])) {
     exit();
 }
 
-$filename = "lalalala.txt";
-$lines = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+/*NOTE!!!
 
-$brand = "";
-foreach ($lines as $item) {
-    if (strtolower($_GET['site']) === strtolower($item)) {
-        $brand = strtoupper($item);
-        break;
+*UPLOAD DAFTAR KEYWORD ANDA DENGAN NAMA FOLDER list.txt
+
+*Ganti Nama Brand Pada ARtikel Dan Landing Page
+<?php echo $BRANDS ?> 
+
+* Ganti Url Path Dengan Ini
+#
+
+* Jangan Lupa Ganti Redirect Login/Daftar DLL
+
+*/
+
+/**
+ * Spintax - Setting
+ *
+ * Ubah Bagian Artikel <h1>, <h2>, <h3>, <p> DLL dengan menambahkan spintex string
+ * <h1><?php echo spinText('{isi|dengan} {spintax artikel} {anda|sendiri}'); ?><h1>
+ * <p><?php echo spinText('{isi|dengan} {spintax artikel} {anda|sendiri}'); ?></p>
+ *
+ * Updated with suggested performance improvement by eZCrush.
+ */
+ 
+function spinText($text) {
+    $pattern = '/\{([^{}]*)\}/';
+    preg_match_all($pattern, $text, $matches);
+
+    foreach ($matches[1] as $match) {
+        $options = explode('|', $match);
+        $replacement = $options[array_rand($options)];
+        $text = preg_replace('/\{' . preg_quote($match, '/') . '\}/', $replacement, $text, 1);
     }
-}
 
-$url  = "https://autindo.poltekindonusa.ac.id/styles/inc/?site=" . $brand;
-$amp  = "https://pub-ed9451999ed54d608d38301702faf214.r2.dev/138.html";
-$dftr = "https://pub-ed9451999ed54d608d38301702faf214.r2.dev/138.html";
-$kw   = "$brand, login $brand, rtp $brand, link alternatif $brand, daftar $BRANDS, Link $brand.";
+    return $text;
+}
 ?>
 
 <!doctype html>
